@@ -1,12 +1,11 @@
-
-import numpy as np
-import pygame as pyg
+import game
 
 def main():
-    print("HEJ")
+    print("INITIALISATION")
+    game.run()
+    
 
-def run():
-    pass
+
 
 
 

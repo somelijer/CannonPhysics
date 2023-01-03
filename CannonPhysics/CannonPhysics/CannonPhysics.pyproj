@@ -22,7 +22,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="constraint.py" />
+    <Compile Include="gameObject.py" />
+    <Compile Include="defs.py" />
     <Compile Include="main.py" />
+    <Compile Include="game.py" />
+    <Compile Include="physics.py" />
+    <Compile Include="rk4N.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|VisualStudio|PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0" />
