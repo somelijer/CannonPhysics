@@ -14,6 +14,7 @@ def physics_step(mass,pos,speed,addedForce,drag_const,deltaTime):
 
     #racunanje rezultujuce sile
     f_rez = fg + f_drag + addedForce
+
     
     
     
@@ -44,6 +45,26 @@ def physics_step(mass,pos,speed,addedForce,drag_const,deltaTime):
     speed[1] = update[1,-1]
 
     return pos,speed
+
+def physics_step_rotation(angle,rotSpeed,momentInertia,addedMomentForce,deltaTime):
+    
+    #racunanje rezultujuce sile
+    M = addedMomentForce
+
+    a = lambda *args: M / momentInertia
+    
+    ta = 0
+    tb = deltaTime
+    h = (tb - ta)
+
+    #racunamo
+    nfx0 = np.array([angle,rotSpeed])
+    _ , update = rk4N(ta, tb, h,nfx0,a)
+    angle = update[0,-1]
+    rotSpeed = update[1,-1]
+    angle = angle % (2*np.pi)
+
+    return angle,rotSpeed
 
 
 

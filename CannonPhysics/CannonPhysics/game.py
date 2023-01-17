@@ -17,14 +17,14 @@ def run():
     pygame.display.set_caption("Cannon physics")
 
     objects = []
+    
     for i in range(1,4):
         circle = go.Circle(d.WIDTH / 2 ,d.HEIGHT / 2,i*10)
         objects.append(circle)
-
+    
     for i in range(1,4):
         reck = go.Rectangle(d.WIDTH * i / 6 ,d.HEIGHT / 4,40 * i,20 * i, np.pi * (i-1)/3)
         objects.append(reck)
-    
     
     
 

@@ -11,7 +11,7 @@ FPS = 100
 GRAVITY_ACC = 9.81
 
 #otpor vazduha
-AIR_RESIS = 1.225
+AIR_RESIS = 1.225 
 
 #odnos jednog piksela i jednog metra
 PIXEL_PER_METER = 20
