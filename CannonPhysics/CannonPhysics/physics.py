@@ -40,7 +40,6 @@ def physics_step(mass,pos,speed,addedForce,drag_const,deltaTime):
     x = pos[1]
     nfx0 = np.array([x,v])
     _ , update = rk4N(ta, tb, h,nfx0,fy)
-    print(update,deltaTime)
     pos[1] = update[0,-1]
     speed[1] = update[1,-1]
 

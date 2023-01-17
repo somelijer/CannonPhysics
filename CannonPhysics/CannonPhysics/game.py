@@ -1,4 +1,4 @@
-from turtle import circle
+
 import numpy as np
 import pygame 
 import defs as d
@@ -17,9 +17,14 @@ def run():
     pygame.display.set_caption("Cannon physics")
 
     objects = []
-    for i in range(1,7):
-        circle = go.Circle(d.WIDTH / (i+1) ,d.HEIGHT / 2,i*10)
+    for i in range(1,4):
+        circle = go.Circle(d.WIDTH / 2 ,d.HEIGHT / 2,i*10)
         objects.append(circle)
+
+    for i in range(1,4):
+        reck = go.Rectangle(d.WIDTH * i / 6 ,d.HEIGHT / 4,40 * i,20 * i, np.pi * (i-1)/3)
+        objects.append(reck)
+    
     
     
 
@@ -30,6 +35,7 @@ def run():
 
         # Tera da igrica radi na maksimalno dati broj fps
         deltaTime = clock.tick(d.FPS) / 1000
+        print("Lenght of frame: " , deltaTime )
     
 
         # Kad se zatvori prozor
