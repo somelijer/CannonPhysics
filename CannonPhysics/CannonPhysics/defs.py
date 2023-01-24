@@ -8,10 +8,10 @@ HEIGHT = 600
 FPS = 100
 
 #gravitacija
-GRAVITY_ACC = 0
+GRAVITY_ACC = 9.81
 
 #otpor vazduha
-AIR_RESIS = 1.225 * 0.01
+AIR_RESIS = 1.225 
 
 #odnos jednog piksela i jednog metra
 PIXEL_PER_METER = 20

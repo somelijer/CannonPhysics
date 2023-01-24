@@ -1,25 +1,14 @@
-from re import A
+
 import numpy as np
 import defs as d
 import pygame
 
-def findFurthestPoint(d,points):
-    maxPoint = np.array([0,0])
-    maxDist = -np.inf
 
-    for i in range(len(points)):
-        dist = np.dot(points[i],d)
-        if(dist > maxDist):
-            maxDist = dist
-            maxPoint = points[i]
-
-    return maxPoint
-
-def closestDots(pointsA,pointsB,direction):
+def closestDots(objectA,objectB,direction):
     '''
     Smatramo da je direction od smera points A ka points B
     '''
-    return findFurthestPoint(direction,pointsA) - findFurthestPoint(-direction,pointsB)
+    return objectA.findFurthestPoint(direction) - objectB.findFurthestPoint(-direction)
 
 def sameDirection(vector,direction):
     if(np.dot(direction,vector) > 0):
@@ -41,13 +30,15 @@ def tripleProduct(a,b,c):
 
 
 
-def GJK(pointsA,pointsB,centreA,centreB):
+def GJK(objectA,objectB):
     #predstavlja prvu tacku pretrazivanja za simplex
+    centreA = objectA.getCentre()
+    centreB = objectB.getCentre()
     direction = centreB - centreA
-    firstPoint = closestDots(pointsA,pointsB,direction)
+    firstPoint = closestDots(objectA,objectB,direction)
     direction = -firstPoint
 
-    secondPoint = closestDots(pointsA,pointsB,direction)
+    secondPoint = closestDots(objectA,objectB,direction)
     #logicki ako trazimo u pravcu od tacke do tacke i nije u pravcu koordinatnog pocetka nema kolizije
     if(secondPoint.dot(direction) <= 0):
         return False
@@ -57,7 +48,7 @@ def GJK(pointsA,pointsB,centreA,centreB):
     direction = tripleProduct(ab,ao,ab)
 
     while(True):
-        thirdPoint = closestDots(pointsA,pointsB,direction)
+        thirdPoint = closestDots(objectA,objectB,direction)
         #logicki ako trazimo u pravcu od tacke do tacke i nije u pravcu koordinatnog pocetka nema kolizije
         if(thirdPoint.dot(direction) <= 0):
             return False
@@ -80,7 +71,26 @@ def GJK(pointsA,pointsB,centreA,centreB):
         else:
             return True
 
+def sweepAndPrune(o):
+    #sortiramo po x osi
+    for i in range(len(i)):
+        pass
 
+
+def colisionCheckClassic(o):
+    #sortiramo po x osi
+    colObj  = []
+    for i in range(len(o)):
+        o[i].normalColor()
+        for j in range(i+1,len(o)):
+            o[j].normalColor()
+            if( GJK( o[i],o[j]) ):
+                colObj.append(o[i])
+                colObj.append(o[j])
+
+
+    for i in range(len(colObj)):
+        colObj[i].colisionColor()
 
         
 

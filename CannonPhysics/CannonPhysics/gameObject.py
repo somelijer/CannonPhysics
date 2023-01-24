@@ -1,5 +1,4 @@
 
-from turtle import color
 import numpy as np
 import pygame 
 import physics as phy
@@ -17,6 +16,12 @@ class GameObject():
     def info():
         pass
 
+    def getCentre(self):
+        pass
+
+    def findFurthestPoint(self,d):
+        pass
+
 class Circle(GameObject):
     
     def __init__(self, X, Y , r):
@@ -28,7 +33,7 @@ class Circle(GameObject):
         self.drag = np.pi * (r/d.PIXEL_PER_METER)**2 * 0.47
 
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
-        self.speed = np.array([20.0,-20.0])
+        self.speed = np.array([10.0,-10.0])
         self.force = np.array([0.0,0.0])
 
     def move(self,screen,deltaTime):
@@ -37,14 +42,33 @@ class Circle(GameObject):
 
         #constraint
         self.pos , self.speed = con.constraint_circle(self.pos,self.speed,self.r)
-        pygame.draw.circle(screen, (0, 0, 255), self.pos * d.PIXEL_PER_METER ,self.r )
+        pygame.draw.circle(screen, self.color, self.pos * d.PIXEL_PER_METER ,self.r )
         
 
     def addForce(self, fx,fy):
         self.force = np.array([fx,fy])
 
+    def getCentre(self):
+        return self.pos * d.PIXEL_PER_METER
+
     def info():
         pass
+
+    def findFurthestPoint(self,d):
+        maxPoint = np.array([0,0])
+        djed = d / np.linalg.norm(d)
+        maxPoint = self.getCentre() + djed * self.r 
+        
+        return maxPoint
+
+    def colisionColor(self):
+        self.color = (255, 0, 0)
+
+    def sweepColor(self):
+        self.color = (120, 0, 0)
+
+    def normalColor(self):
+        self.color = (0, 0, 255)  
 
 
 
@@ -99,14 +123,30 @@ class Rectangle(GameObject):
     def colisionColor(self):
         self.color = (255, 0, 0)
 
+    def sweepColor(self):
+        self.color = (120, 0, 0)
+
     def normalColor(self):
         self.color = (0, 0, 255)  
 
     def addForce(self, fx,fy):
         self.force = np.array([fx,fy])
 
-    def getPointsAndCentre(self):
-        return self.points , self.pos * d.PIXEL_PER_METER
+    def getCentre(self):
+        return self.pos * d.PIXEL_PER_METER
+
+    def findFurthestPoint(self,d):
+        points = self.points
+        maxPoint = np.array([0,0])
+        maxDist = -np.inf
+
+        for i in range(len(points)):
+            dist = np.dot(points[i],d)
+            if(dist > maxDist):
+                maxDist = dist
+                maxPoint = points[i]
+
+        return maxPoint
 
     
         

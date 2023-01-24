@@ -19,17 +19,15 @@ def run():
 
     objects = []
     
-    #for i in range(1,4):
-    #    circle = go.Circle(d.WIDTH * i / 6 ,d.HEIGHT / 2,i*10)
-     #   objects.append(circle)
+    for i in range(1,4):
+        circle = go.Circle(d.WIDTH * i / 6 ,d.HEIGHT / 2,i*10)
+        objects.append(circle)
     
-    i = 1
-    reck1 = go.Rectangle(d.WIDTH / 2  ,d.HEIGHT * i /3,40 * i,20 * i, np.pi * (i-1)/3)
-    objects.append(reck1)
+    for i in range(1,4):
+        reck2 = go.Rectangle(d.WIDTH * i / 6  ,d.HEIGHT * i /6,40 * i,20 * i, np.pi * (i-1)/3)
+        objects.append(reck2)
 
-    i = 2
-    reck2 = go.Rectangle(d.WIDTH / 2  ,d.HEIGHT * i /3,40 * i,20 * i, np.pi * (i-1)/3)
-    objects.append(reck2)
+    
     
 
     deltaTime = 0
@@ -53,13 +51,10 @@ def run():
         
         for o in objects:
             o.move(screen,deltaTime)
+        
+        col.colisionCheckClassic(objects)
 
-        if( col.GJK( reck1.points , reck2.points , reck1.pos * d.PIXEL_PER_METER , reck2.pos * d.PIXEL_PER_METER ) ):
-            reck1.colisionColor()
-            reck2.colisionColor()
-        else:
-            reck1.normalColor()
-            reck2.normalColor()
+        
 
         
 
