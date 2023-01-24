@@ -1,4 +1,5 @@
 
+from turtle import color
 import numpy as np
 import pygame 
 import physics as phy
@@ -21,8 +22,9 @@ class Circle(GameObject):
     def __init__(self, X, Y , r):
         self.t = 0
         self.r = r
+        self.color = (0, 120, 120)
 
-        self.mass = 1 * r**2 * np.pi
+        self.mass = d.OBJECTS_DENSITY * r**2 * np.pi / (d.PIXEL_PER_METER**2)
         self.drag = np.pi * (r/d.PIXEL_PER_METER)**2 * 0.47
 
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
@@ -52,17 +54,18 @@ class Rectangle(GameObject):
         self.t = 0
         self.a = a
         self.b = b
+        self.color = (0, 0, 255)
 
-        self.mass = 1 * a * b
+        self.mass = d.OBJECTS_DENSITY * a * b / (d.PIXEL_PER_METER**2) 
         self.momentInertia = a*b
-        self.drag = (a*b)/(d.PIXEL_PER_METER**2)  * 1.05
+        self.drag = (a**2)/(d.PIXEL_PER_METER**2) + (b**2)/(d.PIXEL_PER_METER**2) * 1.05
 
 
         self.angle = angle
         self.rotSpeed = 0.5
         
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
-        self.speed = np.array([-5.0,-10.0])
+        self.speed = np.array([0.0,-10.0])
         self.force = np.array([0.0,0.0])
         self.momentForce = self.momentInertia * 0
         #cuvano u pikselima a ne metrima
@@ -91,15 +94,21 @@ class Rectangle(GameObject):
                                 ])
         #constraint
         self.pos , self.speed = con.constraint_polygon(self.pos,self.speed,self.points)
-        pygame.draw.polygon(screen,(0, 0, 120), self.points  ,0 )
+        pygame.draw.polygon(screen,self.color, self.points  ,0 )
 
-        
+    def colisionColor(self):
+        self.color = (255, 0, 0)
+
+    def normalColor(self):
+        self.color = (0, 0, 255)  
 
     def addForce(self, fx,fy):
         self.force = np.array([fx,fy])
 
-    def info():
-        pass
+    def getPointsAndCentre(self):
+        return self.points , self.pos * d.PIXEL_PER_METER
+
+    
         
 
 

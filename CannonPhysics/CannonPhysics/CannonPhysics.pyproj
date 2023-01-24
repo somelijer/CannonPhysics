@@ -25,6 +25,7 @@
     <Compile Include="constraint.py" />
     <Compile Include="gameObject.py" />
     <Compile Include="defs.py" />
+    <Compile Include="colision.py" />
     <Compile Include="main.py" />
     <Compile Include="game.py" />
     <Compile Include="physics.py" />
