@@ -4,6 +4,7 @@ import pygame
 import defs as d
 import gameObject as go
 import colision as col
+import tests as test
 
 
 
@@ -16,52 +17,90 @@ def run():
     screen = pygame.display.set_mode([d.WIDTH, d.HEIGHT])
     clock = pygame.time.Clock()
     pygame.display.set_caption("Cannon physics")
-
-    objects = []
+    '''
+    objects = test.testStaticCircles()
+    objects = test.testCircleOnCircle()
+    objects = test.testSquareAndCircles()
+    objects = test.testSquares()
+    objects = test.testSquares2()
+    objects = test.testCannon()
+    objects = test.testCircleOnCircle2()
     
-    for i in range(1,4):
-        circle = go.Circle(d.WIDTH * i / 6 ,d.HEIGHT / 2,i*10)
-        objects.append(circle)
+    ''' 
+    objects = test.testCircleOnCircle()
     
-    for i in range(1,4):
-        reck2 = go.Rectangle(d.WIDTH * i / 6  ,d.HEIGHT * i /6,40 * i,20 * i, np.pi * (i-1)/3)
-        objects.append(reck2)
-
+    
     
     
 
     deltaTime = 0
 
-    running = True
-    while running:
+    if(d.SLOW_MODE == False):
+        running = True
+        while running:
 
-        # Tera da igrica radi na maksimalno dati broj fps
-        deltaTime = clock.tick(d.FPS) / 1000
-        print("Lenght of frame: " , deltaTime )
+            # Tera da igrica radi na maksimalno dati broj fps
+            deltaTime = clock.tick(d.FPS) / 1000
+            print("Lenght of frame: " , deltaTime )
     
 
-        # Kad se zatvori prozor
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+            # Kad se zatvori prozor
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-        # Bela pozadina
-        screen.fill((255, 255, 120))
-
-        
-        for o in objects:
-            o.move(screen,deltaTime)
-        
-        col.colisionCheckClassic(objects)
+            # Bela pozadina
+            screen.fill((255, 255, 120))
 
         
+            for o in objects:
+                o.move(screen,deltaTime)
+        
+            col.colisionCheckClassic(objects)
 
         
 
+        
 
 
-        #update celog ekrana
-        pygame.display.update()
+
+            #update celog ekrana
+            pygame.display.update()
+    else:
+        running = True
+        while running:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        running = False
+
+                    if (pygame.key.get_pressed()[pygame.K_SPACE] == True):
+                        
+                        deltaTime = 0.02
+                        print("Lenght of frame: " , deltaTime )
+    
+
+                        # Kad se zatvori prozor
+                
+
+                        # Bela pozadina
+                        screen.fill((255, 255, 120))
+
+        
+                        for o in objects:
+                            o.move(screen,deltaTime)
+        
+                        col.colisionCheckClassic(objects)
+
+        
+
+        
+
+
+
+                        #update celog ekrana
+                        pygame.display.update()
+
+               
 
 
         

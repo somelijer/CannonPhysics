@@ -9,11 +9,17 @@ class GameObject():
 
     def addForce(self,f):
         pass
+
+    def setSpeed(self,speed):
+        pass
     
     def move(self,screen,deltaTime):
         pass
 
     def info():
+        pass
+
+    def isCircle(self):
         pass
 
     def getCentre(self):
@@ -33,7 +39,7 @@ class Circle(GameObject):
         self.drag = np.pi * (r/d.PIXEL_PER_METER)**2 * 0.47
 
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
-        self.speed = np.array([10.0,-10.0])
+        self.speed = np.array([0.0,0.0])
         self.force = np.array([0.0,0.0])
 
     def move(self,screen,deltaTime):
@@ -48,15 +54,25 @@ class Circle(GameObject):
     def addForce(self, fx,fy):
         self.force = np.array([fx,fy])
 
+    def setSpeed(self,fx,fy):
+        self.speed = np.array([fx,fy])
+
     def getCentre(self):
         return self.pos * d.PIXEL_PER_METER
+
+    def getRadius(self):
+        return self.r
 
     def info():
         pass
 
     def findFurthestPoint(self,d):
         maxPoint = np.array([0,0])
-        djed = d / np.linalg.norm(d)
+        norm = np.linalg.norm(d)
+        if norm != 0:
+            djed = d / norm
+        else:
+            djed = d
         maxPoint = self.getCentre() + djed * self.r 
         
         return maxPoint
@@ -69,6 +85,9 @@ class Circle(GameObject):
 
     def normalColor(self):
         self.color = (0, 0, 255)  
+
+    def isCircle(self):
+        return True
 
 
 
@@ -85,11 +104,11 @@ class Rectangle(GameObject):
         self.drag = (a**2)/(d.PIXEL_PER_METER**2) + (b**2)/(d.PIXEL_PER_METER**2) * 1.05
 
 
-        self.angle = angle
-        self.rotSpeed = 0.5
+        self.angle = np.array([1.0]) * angle
+        self.rotSpeed = np.array([0.0])
         
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
-        self.speed = np.array([0.0,-10.0])
+        self.speed = np.array([0.0,0.0])
         self.force = np.array([0.0,0.0])
         self.momentForce = self.momentInertia * 0
         #cuvano u pikselima a ne metrima
@@ -129,8 +148,14 @@ class Rectangle(GameObject):
     def normalColor(self):
         self.color = (0, 0, 255)  
 
+    def isCircle(self):
+        return False
+
     def addForce(self, fx,fy):
         self.force = np.array([fx,fy])
+
+    def setSpeed(self,fx,fy):
+        self.speed = np.array([fx,fy])
 
     def getCentre(self):
         return self.pos * d.PIXEL_PER_METER
@@ -145,7 +170,6 @@ class Rectangle(GameObject):
             if(dist > maxDist):
                 maxDist = dist
                 maxPoint = points[i]
-
         return maxPoint
 
     
