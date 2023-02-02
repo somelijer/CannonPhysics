@@ -27,4 +27,4 @@ PIXEL_PER_METER = 20
 OBJECTS_DENSITY = 20
 
 #koeficient koliko se energije prenosi prilikom sudara
-COEF_RESTITUTION = 0.7
+COEF_RESTITUTION = 0.9

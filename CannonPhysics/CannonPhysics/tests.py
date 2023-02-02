@@ -27,7 +27,7 @@ def testSquareAndCircles():
         objects.append(circle)
     
     i = 2
-    reck2 = go.Rectangle(d.WIDTH / 2  ,d.HEIGHT /2,20 * i,20 * i, np.pi / 4)
+    reck2 = go.Rectangle(d.WIDTH / 2  ,d.HEIGHT /2,21 * i,20 * i, np.pi / 4)
     reck2.setSpeed(0.0,-10.0)
     objects.append(reck2)
 

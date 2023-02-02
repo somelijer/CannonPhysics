@@ -154,10 +154,10 @@ def solveCircleColision(circleA,circleB,vjed ):
     circleB.speed = uB + p * mA * vjed
 
 def solveColision(objectA,objectB,normal):
-    '''
+    ''''''
     objectA.speed = normal * np.dot(objectA.speed * -1,normal)
     objectB.speed = normal * np.dot(objectB.speed * -1,normal)
-    '''
+    
 
 
 
@@ -189,10 +189,11 @@ def colisionCheckClassic(o):
                 if(CircleColisionCheck(o[i],o[j])):
                     colObj.append(o[i])
                     colObj.append(o[j])
+            elif( GJK( o[i],o[j]) ):
+                 colObj.append(o[i])
+                 colObj.append(o[j])
 
-            if( GJK( o[i],o[j]) ):
-                colObj.append(o[i])
-                colObj.append(o[j])
+            
 
 
     for i in range(len(colObj)):
