@@ -7,6 +7,9 @@ SLOW_MODE = 0
 #nacin da iskljucimo koliziju
 COLISION_OFF = 0
 
+#print informacije o koliziji
+COLSION_INFO = 1
+
 #velicina ekrana
 WIDTH = 800
 HEIGHT = 600
@@ -28,3 +31,9 @@ OBJECTS_DENSITY = 20
 
 #koeficient koliko se energije prenosi prilikom sudara
 COEF_RESTITUTION = 0.9
+
+#maksimalna rotaciona brzina
+MAX_ROT_SPEED = 20
+
+#maksimalna linearna brzina
+MAX_SPEED = 40

@@ -1,4 +1,5 @@
 
+from turtle import circle
 import numpy as np
 import defs as d
 import pygame
@@ -70,9 +71,14 @@ def GJK(objectA,objectB):
             direction = cbPerp
         else:
             simplex = [firstPoint,secondPoint,thirdPoint]
-            normal = EPA(objectA,objectB,simplex)
+            normal,penetration = EPA(objectA,objectB,simplex)
             if(d.COLISION_OFF == False):
-                solveColision(objectA,objectB,normal)
+                if(objectA.isCircle()):
+                    solveCirclePolygonColision(objectA,objectB,normal,penetration)
+                elif(objectB.isCircle()):
+                    solveCirclePolygonColision(objectB,objectA,normal,penetration)
+                else:
+                    solvePolygonColision(objectA,objectB,normal,penetration)
             return True
 
 
@@ -107,18 +113,19 @@ def EPA(objectA,objectB,simplex):
         s,savePoints = closestDots(objectA,objectB,minNormal)
         sDistance = np.dot(minNormal,s)
 
-        if(abs(sDistance - minDistance) > 0.001 ):
+        if(abs(sDistance - minDistance) > 0.0001 ):
             minDistance = np.Inf
             simplex.insert(minIndex,s)
     print(savePoints)
-    return minNormal
+    return minNormal,minDistance
 
 def CircleColisionCheck(circleA,circleB):
     centreA = circleA.getCentre()
     centreB = circleB.getCentre()
     radiusA = circleA.getRadius()
     radiusB = circleB.getRadius()
-    if( np.linalg.norm(centreA - centreB) >= radiusA + radiusB ):
+    penetration = np.linalg.norm(centreA - centreB) - radiusA - radiusB
+    if( penetration >= 0 ):
         return False
 
     vector = centreB - centreA
@@ -130,7 +137,7 @@ def CircleColisionCheck(circleA,circleB):
         vjed = vector
 
     if(d.COLISION_OFF == False):
-        solveCircleColision(circleA,circleB,vjed )
+        solveCircleColision(circleA,circleB,vjed ,penetration)
     return True
 
 
@@ -140,20 +147,110 @@ def CircleColisionCheck(circleA,circleB):
 
 
 
-def solveCircleColision(circleA,circleB,vjed ):
+def solveCircleColision(circleA,circleB,vjed ,penetration):
     mA = circleA.mass
     mB = circleB.mass
     uA = circleA.speed
     uB = circleB.speed
 
-    print(uA,vjed,uA*vjed,np.dot(uA,vjed))
+    if(d.COLSION_INFO):
+        print("Normal:",vjed,"Colision point:",circleA.findFurthestPoint(vjed),"Penetration:",-penetration)
 
     p =  d.COEF_RESTITUTION * 2 * (np.dot(uA,vjed) - np.dot(uB,vjed)) / (mA + mB)
 
     circleA.speed = uA - p * mB * vjed
     circleB.speed = uB + p * mA * vjed
+    circleA.pos +=  vjed * penetration / d.PIXEL_PER_METER
 
-def solveColision(objectA,objectB,normal):
+def solveCirclePolygonColision(circleA,objectB,normal,penetration):
+    if(not circleA.isCircle()):
+        print("ERROR")
+    centreA = circleA.getCentre()
+    centreB = objectB.getCentre()
+    mA = circleA.mass
+    mB = objectB.mass
+    iA = circleA.momentInertia
+    iB = objectB.momentInertia
+    uA = circleA.speed
+    uB = objectB.speed
+    omegaA = np.array([0.0])
+    omegaB = objectB.rotSpeed
+     
+
+    if( sameDirection( normal,centreB - centreA) ):
+        normal *= -1
+
+    colisionPoint = circleA.findFurthestPoint(-normal)
+    rA = colisionPoint - centreA
+    rB = colisionPoint - centreB
+
+
+
+    if(d.COLSION_INFO):
+        print("Normal:",normal,"Colision point:",colisionPoint,"Penetration:",penetration)
+
+
+
+    temp = np.cross( np.array([0,0,omegaA[0]]) , np.array([rA[0],rA[1],0]) )
+    temp = np.array([temp[0],temp[1]])
+    uAp = uA + temp
+
+    temp = np.cross( np.array([0,0,omegaB]) , np.array([rB[0],rB[1],0]) )
+    temp = np.array([temp[0],temp[1]])
+    uBp = uB + temp
+
+    uAB = uAp - uBp
+    temp1 = (1/mA + 1/mB + ( ( np.cross(rA,normal) )**2 )/iA +( ( np.cross(rB,normal) )**2 )/iB )
+    temp2 = (-1-d.COEF_RESTITUTION) * np.dot(uAB , normal)
+    j =  temp2 / temp1 
+
+    J = j * normal
+    #print("j and J point to circle:",j,J,"delta cicle speed",J/mA,"delta polygon speed",-J/mB)
+    circleA.speed = uA + J/mA
+    objectB.speed = uB - J/mB
+    objectB.rotSpeed = omegaB + np.cross(rB,J) / iB
+    print(np.cross(rB,J) / iB )
+    
+
+    
+    a = np.linalg.norm(normal)
+    if(a!=0):
+         normal = normal / a
+    objectB.pos +=  -normal * penetration / d.PIXEL_PER_METER
+    circleA.pos +=  normal * penetration / d.PIXEL_PER_METER
+
+    
+
+
+def solvePolygonWallColision(centreA,mA,iA,uA,omegaA,colisionPoint,normal):
+    
+    
+    rA = colisionPoint - centreA
+
+
+
+    if(d.COLSION_INFO):
+        print("Normal:",normal,"Colision point:",colisionPoint)
+
+
+
+    temp = np.cross( np.array([0,0,omegaA]) , np.array([rA[0],rA[1],0]) )
+    temp = np.array([temp[0],temp[1]])
+    uAp = uA + temp
+
+    temp1 = (1/mA  + ( ( np.cross(rA,normal) )**2 )/iA )
+    temp2 = (-1-d.COEF_RESTITUTION) * np.dot(uAp , normal)
+    j =  temp2 / temp1 
+
+    J = j * normal
+    #print("j and J point to circle:",j,J,"delta cicle speed",J/mA,"delta polygon speed",-J/mB)
+    speed = uA + J/mA
+    rotSpeed = omegaA + np.cross(rA,J) / iA
+
+    return speed , rotSpeed
+
+
+def solvePolygonColision(objectA,objectB,normal,penetration):
     ''''''
     objectA.speed = normal * np.dot(objectA.speed * -1,normal)
     objectB.speed = normal * np.dot(objectB.speed * -1,normal)

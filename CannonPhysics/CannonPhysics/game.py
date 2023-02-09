@@ -1,13 +1,10 @@
 
-from xml.etree.ElementTree import tostring
 import numpy as np
 import pygame 
 import defs as d
 import gameObject as go
 import colision as col
 import tests as test
-
-
 
 
 
@@ -35,7 +32,17 @@ def run():
     tests.append(t)
     t = test.testCircleOnCircle2
     tests.append(t)
-
+    t = test.testLotsOfCircles
+    tests.append(t)
+    t = test.testLotsOfCircles2
+    tests.append(t)
+    t = test.testPointDetection
+    tests.append(t)
+    t = test.testPolyCirc
+    tests.append(t)
+    t = test.testDroppingReck
+    tests.append(t)
+    
     
     
     

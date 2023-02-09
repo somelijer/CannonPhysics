@@ -1,9 +1,11 @@
 
+import this
 import numpy as np
 import pygame 
 import physics as phy
 import constraint as con
 import defs as d
+import colision as col
 
 class GameObject():
 
@@ -37,6 +39,7 @@ class Circle(GameObject):
 
         self.mass = d.OBJECTS_DENSITY * r**2 * np.pi / (d.PIXEL_PER_METER**2)
         self.drag = np.pi * (r/d.PIXEL_PER_METER)**2 * 0.47
+        self.momentInertia = 1/2 * self.mass * (r/d.PIXEL_PER_METER)**2
 
         self.pos = np.array([X/d.PIXEL_PER_METER,Y/d.PIXEL_PER_METER])
         self.speed = np.array([0.0,0.0])
@@ -100,7 +103,7 @@ class Rectangle(GameObject):
         self.color = (0, 0, 255)
 
         self.mass = d.OBJECTS_DENSITY * a * b / (d.PIXEL_PER_METER**2) 
-        self.momentInertia = a*b
+        self.momentInertia = (a**2)/(d.PIXEL_PER_METER**2) + (b**2)/(d.PIXEL_PER_METER**2) * 1/12 * self.mass
         self.drag = (a**2)/(d.PIXEL_PER_METER**2) + (b**2)/(d.PIXEL_PER_METER**2) * 1.05
 
 
@@ -135,8 +138,19 @@ class Rectangle(GameObject):
                                 ( XX   + a * np.sin(self.angle) + b * np.cos(-self.angle), YY   + a * np.cos(self.angle) + b * np.sin(-self.angle) ),
                                 ( XX   + b * np.cos(-self.angle) , YY  + b * np.sin(-self.angle) )
                                 ])
+
         #constraint
-        self.pos , self.speed = con.constraint_polygon(self.pos,self.speed,self.points)
+        self.pos , colisionPoint , normal , colis = con.constraint_polygon(self.pos,self.speed,self.points)
+        if(colis):
+            self.speed , self.rotSpeed = col.solvePolygonWallColision(self.pos * d.PIXEL_PER_METER , self.mass , self.momentInertia , self.speed , self.rotSpeed , colisionPoint , normal )
+
+        if (np.linalg.norm(self.speed) > d.MAX_SPEED):
+            self.speed *= d.MAX_SPEED / np.linalg.norm(self.speed) 
+
+        if (self.rotSpeed > d.MAX_ROT_SPEED):
+            self.rotSpeed = d.MAX_ROT_SPEED
+       
+        self.updateCorners()
         pygame.draw.polygon(screen,self.color, self.points  ,0 )
 
     def colisionColor(self):
@@ -156,6 +170,18 @@ class Rectangle(GameObject):
 
     def setSpeed(self,fx,fy):
         self.speed = np.array([fx,fy])
+
+    def updateCorners(self):
+        #update svih coskova
+        a = self.a
+        b = self.b
+        XX = self.pos[0]  * d.PIXEL_PER_METER  - ( a * np.sin(self.angle) + b * np.cos(-self.angle) ) / 2
+        YY = self.pos[1] * d.PIXEL_PER_METER - ( a * np.cos(self.angle) + b * np.sin(-self.angle) )/ 2
+        self.points = np.array([( XX  , YY  ),
+                                ( XX   + a * np.sin(self.angle) , YY  + a * np.cos(self.angle)),
+                                ( XX   + a * np.sin(self.angle) + b * np.cos(-self.angle), YY   + a * np.cos(self.angle) + b * np.sin(-self.angle) ),
+                                ( XX   + b * np.cos(-self.angle) , YY  + b * np.sin(-self.angle) )
+                                ])
 
     def getCentre(self):
         return self.pos * d.PIXEL_PER_METER
