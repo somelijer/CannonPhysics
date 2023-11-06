@@ -11,3 +11,6 @@ The project was made using python with pygame for UI and numpy for implementing 
 
 Video demonstration:
 https://www.youtube.com/watch?v=cyQx5o3xIRw
+
+
+![Screenshot 2023-11-06 200040](https://github.com/somelijer/CannonPhysics/assets/116906162/a96783a3-fbda-434f-9326-524419daaeed)
